@@ -25,13 +25,11 @@ class ConcatView(view.View):
         hello_label = ttk.Label(self.v, text='start the conversion')
         hello_label.grid(row=0, column=0, sticky='nesw', pady=(40, 40), padx=(60, 60))
 
+        if not self.intro:
+            p = ttk.Progressbar(self.v, orient=HORIZONTAL, length=200, mode='indeterminate')
+            p.grid(row=2, column=0, sticky='nesw', pady=(40, 40), padx=(60, 60))
 
-        if self.intro:
-            button_text = 'start'
-        else:
-            button_text = 'writing to '+str(self.app.output)
-
-        conv_button = ttk.Button(self.v, text=button_text, command=self.concat)
+        conv_button = ttk.Button(self.v, text="start", command=self.concat)
         conv_button.grid(row=2, column=0, sticky="new", pady=(40, 40), padx=(60, 60))
 
     def concat(self):

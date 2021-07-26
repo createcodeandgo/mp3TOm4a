@@ -21,7 +21,10 @@ class Converter():
         self.root.grid()
         self.root.title("mp3s to m4a")
 
-        mainframe = ttk.Frame(self.root, padding="10 10 10 10", width=600, height=600)
+        mainframe = ttk.Frame(self.root,
+                              padding="10 10 10 10",
+                              width=600,
+                              height=600)
         self.root.rowconfigure(0, weight=1)
         self.root.columnconfigure(0, weight=1)
         mainframe.grid(row=0, column=0, sticky="nswe")
@@ -61,7 +64,7 @@ class Converter():
         return meta_out
 
     def concatenatemp3s(self):
-        #run ffmpeg to concatenate the mp3s into one m4a
+        # run ffmpeg to concatenate the mp3s into one m4a
         command = "ffmpeg -f concat -safe 0 -i "+str(self.listfile)+" -acodec aac "+str(self.output)
         args = shlex.split(command)
         cat_out = subprocess.run(args, capture_output=True)
@@ -77,7 +80,7 @@ class Converter():
                     for c in album:
                         if c.isalnum():
                             temp += c
-                    self.album = Path(temp)    
+                    self.album = Path(temp)
 
     def load_media(self, audio, mp):
         media = vlc.Media(audio)
@@ -92,8 +95,8 @@ class Converter():
 
     def get_all_files(self):
         files = sorted([f for f in os.listdir(".")
-                        if f.endswith(".mp3")],
-                        key=str.lower)
+                       if f.endswith(".mp3")],
+                       key=str.lower)
         return files
 
     def write_metadata(self, track, end, length):
@@ -103,38 +106,13 @@ class Converter():
             f.write('TIMEBASE=1/1000\n')
             f.write('START='+str(end)+'\n')
             end = end + length
-            f.write('END='+ str(end)+'\n')
+            f.write('END='+str(end)+'\n')
             f.write('title='+track+'\n')
             secs = length // 1000
             mins = secs // 60
             secs = secs % 60
             f.write('#chapter duration 00:'+str(mins)+':'+str(secs)+'\n')
 
-'''
-# get list.txt file with alle mp3s in directory
-# put info from one mp3 into meta.txt
-get_filelist()
-
-#run ffmpeg to concatenate the mp3s into one m4a
-os.popen("ffmpeg -f concat -i list.txt -acodec aac output.m4a")
-
-album = get_album_name()
-
-mp3s = get_files()
-mp = vlc.MediaPlayer()
-length = []
-duration = 0
-for track in mp3s:
-    print(track)
-    load_media(track, mp)
-    length = read_length(mp)
-    name = track[:-len(".mp3")] # in 3.9 use removesuffix('.mp3')
-    write_metadata(album+"_"+name, duration, length)
-    duration += (length + 1)
-
-os.popen("ffmpeg -i output.m4a -i meta.txt -map_metadata 1 -codec copy new_file.m4a")
-
-'''
 
 def main():
     try:
@@ -146,7 +124,7 @@ def main():
         print(conv.meta_out)
         print("cat*******************************")
         print(conv.cat_out)
-    
+
 
 if __name__ == "__main__":
     main()

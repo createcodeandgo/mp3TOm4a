@@ -28,31 +28,31 @@ class MetaView(view.View):
         self.v.grid(row=0, column=0, sticky="nswe")
 
         hello_label = ttk.Label(self.v, text='put chapter information into m4a')
-        hello_label.grid(row=0, column=0, sticky='nesw', pady=(40,40), padx=(60,60))
+        hello_label.grid(row=0, column=0, sticky='nesw', pady=(40, 40), padx=(60, 60))
 
         extract_button = ttk.Button(self.v, text='extract meta data from mp3s', command=self.extract_meta_data)
-        extract_button.grid(row=2, column=0, sticky='nesw', pady=(40,40), padx=(60,60))
+        extract_button.grid(row=2, column=0, sticky='nesw', pady=(40, 40), padx=(60, 60))
 
         if self.extracted:
             labeltext = "extracted length info from mp3s"
         else:
             labeltext = ""
         extract_label = ttk.Label(self.v, text=labeltext)
-        extract_label.grid(row=3, column=0, sticky='nesw', pady=(40,40), padx=(60,60))
+        extract_label.grid(row=3, column=0, sticky='nesw', pady=(40, 40), padx=(60, 60))
 
         insert_button = ttk.Button(self.v, text='insert meta data into '+self.app.m4aname, command=self.meta_into_m4a)
-        insert_button.grid(row=4, column=0, sticky='nesw', pady=(40,40), padx=(60,60))
+        insert_button.grid(row=4, column=0, sticky='nesw', pady=(40, 40), padx=(60, 60))
 
         if self.inserted:
             labeltext = "inserted chapter info into "+self.app.m4aname
         else:
             labeltext = ""
         extract_label = ttk.Label(self.v, text=labeltext)
-        extract_label.grid(row=5, column=0, sticky='nesw', pady=(40,40), padx=(60,60))
+        extract_label.grid(row=5, column=0, sticky='nesw', pady=(40, 40), padx=(60, 60))
 
         if self.inserted:
             quit_button = ttk.Button(self.v, text="quit", command=self.shutdown)
-            quit_button.grid(row=6, column=0, sticky="news", pady=(40,40), padx=(60,60))
+            quit_button.grid(row=6, column=0, sticky="news", pady=(40, 40), padx=(60, 60))
 
     def extract_meta_data(self):
         mp3s = self.app.files
@@ -63,7 +63,7 @@ class MetaView(view.View):
             self.app.load_media(track, mp)
             length = self.app.read_length(mp)
             track = Path(track).name
-            name = track[:-len(".mp3")] # in 3.9 use removesuffix('.mp3')
+            name = track[:-len(".mp3")]  # in 3.9 use removesuffix('.mp3')
             self.app.write_metadata(str(self.app.album)+"_"+name, duration, length)
             duration += (length + 1)
         self.extracted = True

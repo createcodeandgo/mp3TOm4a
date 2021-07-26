@@ -60,7 +60,6 @@ class OpeningView(view.View):
         files = filedialog.askopenfilenames(title='find mp3s', initialdir=self.sourcepath, filetypes=types)
         for f in files:
             filelist.append(Path(f))
-        print(filelist)
 
         path = Path(filelist[0]).parent
         if Path.cwd() != Path(path):
@@ -71,7 +70,6 @@ class OpeningView(view.View):
             self.app.source_path = Path(".")
             for f in filelist:
                 f = f.name
-                print(f)
                 self.app.files.append(Path(f))
 
         self.v.destroy()
@@ -108,10 +106,6 @@ class OpeningView(view.View):
         self.app.listfile = Path(self.app.dest_path, "list.txt")
         self.app.metafile = Path(self.app.dest_path, "meta.txt")
         self.app.output = Path(self.app.dest_path, "output.m4a")
-
-        print(self.app.listfile)
-        print(self.app.metafile)
-        print(self.app.output)
 
         if self.app.listfile.exists():
             os.remove(self.app.listfile)

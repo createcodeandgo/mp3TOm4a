@@ -39,7 +39,6 @@ class ConcatView(view.View):
         # starts meta.txt files with general tag info
         # writes mp3 files to concat into list.txt
         meta_out = str(self.app.get_filelist())
-        print(meta_out)
         if meta_out.endswith("directory\n"):
             print("error with writing meta file, maybe spaces in path?")
             self.app.root.destroy()

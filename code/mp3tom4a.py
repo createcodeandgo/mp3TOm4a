@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import vlc
 import os
@@ -65,7 +65,7 @@ class Converter():
 
     def concatenatemp3s(self):
         # run ffmpeg to concatenate the mp3s into one m4a
-        command = "ffmpeg -f concat -safe 0 -i "+str(self.listfile)+" -acodec aac "+str(self.output)
+        command = "ffmpeg -f concat -safe 0 -i "+str(self.listfile)+" -acodec aac -vn "+str(self.output)
         args = shlex.split(command)
         cat_out = subprocess.run(args, capture_output=True)
         return cat_out

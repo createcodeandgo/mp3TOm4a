@@ -9,12 +9,13 @@ To extract the length of the mp3 files to get the chapter length, the program us
 ## How to make it executable in any directory
 
 To make this easier I followed these steps:
-- put a link into ~/.local/bin path
-`ln -s path/to/mp3tom4a.py mp3tom4a`
-- made that link executable
-`chmod 700 mp3tom4a
-- made the mp3tom4a.py file executable
+- make the mp3tom4a.py file executable
 go to its directory and `chmod 700 mp3tom4a.py`
 - add `#!/usr/bin/python3` as the first line in mp3tom4a.py
+- put a link into ~/bin path
+`ln -s path/to/mp3tom4a.py mp3tom4a`
+- make that link executable if it is not already
+`chmod 700 mp3tom4a`
 
-If ~/.local/bin is not part of your $PATH variable, you can add it with `PATH="~/.local/bin:$PATH"`.
+If ~/bin is not part of your $PATH variable, you can add it with `export PATH="/home/yourusername/bin:$PATH"` in your ~/.bashrc.
+For testing you can just add the path of mp3tom4a.py temporarily to your path with `export PATH="/path/to/mp3tom4a.py:$PATH"` in your shell.

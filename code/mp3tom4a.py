@@ -53,7 +53,7 @@ class Converter():
     def show_view(self, viewname):
         frame = self.view_dict[viewname]
         frame.show()
-
+'''
     def get_filelist(self):
         # read meta data from the first file selected
         # save it in meta.txt
@@ -70,6 +70,7 @@ class Converter():
                 f.write("file '"+str(p)+"'\n")
         return meta_out
 
+
     def check_path(self, path):
         pathparts = path.parts
         newparts = []
@@ -83,6 +84,7 @@ class Converter():
         for item in newparts:
             newpath = Path(newpath, item)
         return newpath
+
 
     def concatenatemp3s(self):
         # run ffmpeg to concatenate the mp3s into one m4a
@@ -105,6 +107,7 @@ class Converter():
                         if c.isalnum():
                             temp += c
                     self.album = Path(temp)
+
 
     def load_media(self, audio, mp):
         media = vlc.Media(audio)
@@ -136,6 +139,7 @@ class Converter():
             mins = secs // 60
             secs = secs % 60
             f.write('#chapter duration 00:'+str(mins)+':'+str(secs)+'\n')
+'''
 
 
 def main():

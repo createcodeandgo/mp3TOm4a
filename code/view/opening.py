@@ -53,6 +53,10 @@ class OpeningView(view.View):
         next_button.grid(row=7, column=0, sticky="new", pady=(10, 10), padx=(20, 20))
 
     def source(self):
+        '''
+            choose mp3s to concatenate
+            set source path
+        '''
         types = [('mp3 files', '*.mp3')]
         self.get_rid_of_hiddenfiles()
         filelist = []
@@ -61,7 +65,11 @@ class OpeningView(view.View):
         for f in files:
             filelist.append(Path(f))
 
-        path = Path(filelist[0]).parent
+        if files:
+            path = Path(filelist[0]).parent
+        else:
+            path = Path.cwd()
+        # probably now no longer important?
         if Path.cwd() != Path(path):
             self.app.source_path = path.resolve()
             for f in filelist:
@@ -78,6 +86,9 @@ class OpeningView(view.View):
         self.show()
 
     def destination(self):
+        '''
+            set destination path for m4a
+        '''
         self.get_rid_of_hiddenfiles()
 
         path = Path(filedialog.askdirectory(title='path for m4a', initialdir=self.app.source_path))
@@ -90,6 +101,9 @@ class OpeningView(view.View):
         self.show()
 
     def get_rid_of_hiddenfiles(self):
+        '''
+            no hidden files in file dialog
+        '''
         try:
             # call a dummy dialog with an impossible option to initialize the file
             # dialog without really getting a dialog window; this will throw a
@@ -105,13 +119,13 @@ class OpeningView(view.View):
             pass
 
     def to_meta(self):
+        '''
+            set paths to list.txt, meta.txt and temporary output m4a file
+            delete those files if old ones are present
+        '''
         self.app.listfile = Path(self.app.dest_path, "list.txt")
         self.app.metafile = Path(self.app.dest_path, "meta.txt")
         self.app.output = Path(self.app.dest_path, "output.m4a")
-
-        print(self.app.listfile)
-        print(self.app.metafile)
-        print(self.app.output)
 
         if self.app.listfile.exists():
             os.remove(self.app.listfile)

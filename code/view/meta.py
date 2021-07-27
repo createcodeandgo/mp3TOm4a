@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import shlex
 import subprocess
+import sox
 
 import vlc
 
@@ -40,11 +41,11 @@ class MetaView(view.View):
         extract_label = ttk.Label(self.v, text=labeltext)
         extract_label.grid(row=3, column=0, sticky='nesw', pady=(40, 40), padx=(60, 60))
 
-        insert_button = ttk.Button(self.v, text='insert meta data into '+self.app.m4aname, command=self.meta_into_m4a)
+        insert_button = ttk.Button(self.v, text='insert meta data into '+str(self.app.m4aname), command=self.meta_into_m4a)
         insert_button.grid(row=4, column=0, sticky='nesw', pady=(40, 40), padx=(60, 60))
 
         if self.inserted:
-            labeltext = "inserted chapter info into "+self.app.m4aname
+            labeltext = "inserted chapter info into "+str(self.app.m4aname)
         else:
             labeltext = ""
         extract_label = ttk.Label(self.v, text=labeltext)
@@ -56,35 +57,59 @@ class MetaView(view.View):
 
     def extract_meta_data(self):
         mp3s = self.app.files
-        mp = vlc.MediaPlayer()
+        #mp = vlc.MediaPlayer()
         length = []
         duration = 0
         for track in mp3s:
-            self.app.load_media(track, mp)
-            length = self.app.read_length(mp)
+            #self.load_media(track, mp)
+            #length = self.app.read_length(mp)
+            l = sox.file_info.duration(track)
+            length = int(l*1000)
             track = Path(track).name
             name = track[:-len(".mp3")]  # in 3.9 use removesuffix('.mp3')
-            self.app.write_metadata(str(self.app.album)+"_"+name, duration, length)
+            self.write_metadata(str(self.app.album)+"_"+name, duration, length)
             duration += (length + 1)
         self.extracted = True
         self.v.destroy()
         self.app.show_view("meta")
 
+    def write_metadata(self, track, end, length):
+        with open(self.app.metafile, 'a') as f:
+            f.write('\n')
+            f.write('[CHAPTER]\n')
+            f.write('TIMEBASE=1/1000\n')
+            f.write('START='+str(end)+'\n')
+            end = end + length
+            f.write('END='+str(end)+'\n')
+            f.write('title='+track+'\n')
+            secs = length // 1000
+            mins = secs // 60
+            secs = secs % 60
+            f.write('#chapter duration 00:'+str(mins)+':'+str(secs)+'\n')
+
     def meta_into_m4a(self):
-        #command = "ffmpeg -i "+str(self.app.output)+" -i "+str(self.app.metafile)+" -map_metadata 1 -codec copy "+str(self.app.m4aname)
-        command = "ffmpeg -i {} -i {} -map_metadata 1 -codec copy {}".format(shlex.quote(str(self.app.output)), shlex.quote(str(self.app.metafile)), shlex.quote(str(self.app.m4aname)))
+        output = shlex.quote(str(self.app.output))
+        meta = shlex.quote(str(self.app.metafile))
+        m4a = shlex.quote(str(self.app.m4aname))
+        print("m4a file: ",m4a)
+        #command = "ffmpeg -i {} -i {} -map_metadata 1 -codec copy {}".format(shlex.quote(str(self.app.output)), shlex.quote(str(self.app.metafile)), shlex.quote(str(self.app.m4aname)))
+        command = "ffmpeg -i {} -i {} -map_metadata 1 -codec copy {}".format(output, meta, m4a)
+        print(command)
         args = shlex.split(command)
         out = subprocess.run(args, capture_output=True)
         self.inserted = True
         self.v.destroy()
         self.app.show_view("meta")
 
+    def insert_cover_art(self):
+        # ffmpeg -i Alice\ im\ Wunderland_1.m4a -i cover.jpg -map 0:0 -map 1:0 -acodec copy out.m4a
+
     def shutdown(self):
-        #if self.app.listfile.exists():
-        #    os.remove(self.app.listfile)
-        #if self.app.metafile.exists():
-        #    os.remove(self.app.metafile)
-        #if self.app.output.exists():
-        #    os.remove(self.app.output)
+        if self.app.listfile.exists():
+            os.remove(self.app.listfile)
+        if self.app.metafile.exists():
+            os.remove(self.app.metafile)
+        if self.app.output.exists():
+            os.remove(self.app.output)
 
         self.app.root.destroy()

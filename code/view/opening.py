@@ -72,17 +72,19 @@ class OpeningView(view.View):
                 f = f.name
                 self.app.files.append(Path(f))
 
+        self.app.dest_path = self.app.source_path
+
         self.v.destroy()
         self.show()
 
     def destination(self):
         self.get_rid_of_hiddenfiles()
 
-        path = filedialog.askdirectory(title='path for m4a', initialdir=self.app.source_path)
+        path = Path(filedialog.askdirectory(title='path for m4a', initialdir=self.app.source_path))
         if Path.cwd() != Path(path):
             self.app.dest_path = path.resolve()
         else:
-            self.app.dest_path = Path(".")
+            self.app.dest_path = self.app.source_path
 
         self.v.destroy()
         self.show()
@@ -106,6 +108,10 @@ class OpeningView(view.View):
         self.app.listfile = Path(self.app.dest_path, "list.txt")
         self.app.metafile = Path(self.app.dest_path, "meta.txt")
         self.app.output = Path(self.app.dest_path, "output.m4a")
+
+        print(self.app.listfile)
+        print(self.app.metafile)
+        print(self.app.output)
 
         if self.app.listfile.exists():
             os.remove(self.app.listfile)

@@ -71,7 +71,8 @@ class MetaView(view.View):
         self.app.show_view("meta")
 
     def meta_into_m4a(self):
-        command = "ffmpeg -i "+str(self.app.output)+" -i "+str(self.app.metafile)+" -map_metadata 1 -codec copy "+str(self.app.m4aname)
+        #command = "ffmpeg -i "+str(self.app.output)+" -i "+str(self.app.metafile)+" -map_metadata 1 -codec copy "+str(self.app.m4aname)
+        command = "ffmpeg -i {} -i {} -map_metadata 1 -codec copy {}".format(shlex.quote(str(self.app.output)), shlex.quote(str(self.app.metafile)), shlex.quote(str(self.app.m4aname)))
         args = shlex.split(command)
         out = subprocess.run(args, capture_output=True)
         self.inserted = True
@@ -79,11 +80,11 @@ class MetaView(view.View):
         self.app.show_view("meta")
 
     def shutdown(self):
-        if self.app.listfile.exists():
-            os.remove(self.app.listfile)
-        if self.app.metafile.exists():
-            os.remove(self.app.metafile)
-        if self.app.output.exists():
-            os.remove(self.app.output)
+        #if self.app.listfile.exists():
+        #    os.remove(self.app.listfile)
+        #if self.app.metafile.exists():
+        #    os.remove(self.app.metafile)
+        #if self.app.output.exists():
+        #    os.remove(self.app.output)
 
         self.app.root.destroy()

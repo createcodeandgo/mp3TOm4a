@@ -55,18 +55,42 @@ class Converter():
         frame.show()
 
     def get_filelist(self):
-        command = "ffmpeg -i "+str(self.files[0])+" -f ffmetadata "+str(self.metafile)
+        # read meta data from the first file selected
+        # save it in meta.txt
+        command = "ffmpeg -i {} -f ffmetadata {}".format(shlex.quote(str(self.files[0])),shlex.quote(str(self.metafile)))
+        print("get_filelist: ",command)
         args = shlex.split(command)
+        print("get_filelist: ",command)
         meta_out = subprocess.run(args, capture_output=True)
+        # save selected file names in list.txt
+        print(self.files)
         for mp3 in self.files:
-            with open(str(self.listfile), 'a') as f:
-                f.write("file '"+str(mp3)+"'\n")
+            p = self.check_path(mp3)
+            with open(self.listfile, 'a') as f:
+                f.write("file '"+str(p)+"'\n")
         return meta_out
+
+    def check_path(self, path):
+        pathparts = path.parts
+        newparts = []
+        for p in pathparts:
+            if p != '/':
+                newparts.append(p)
+            else:
+                newparts.append(p)
+
+        newpath = Path(newparts.pop(0))
+        for item in newparts:
+            newpath = Path(newpath, item)
+        return newpath
 
     def concatenatemp3s(self):
         # run ffmpeg to concatenate the mp3s into one m4a
-        command = "ffmpeg -f concat -safe 0 -i "+str(self.listfile)+" -acodec aac -vn "+str(self.output)
+        output = self.check_path(self.output)
+        command = "ffmpeg -f concat -safe 0 -i {} -acodec aac -vn {}".format(shlex.quote(str(self.listfile)),shlex.quote(str(output)))
+        print("concat: ",command)
         args = shlex.split(command)
+        print("concat: ",args)
         cat_out = subprocess.run(args, capture_output=True)
         return cat_out
 

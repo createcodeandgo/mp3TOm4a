@@ -11,4 +11,4 @@ In the background the app uses the following software:
 - [Pysox](https://github.com/rabitt/pysox)
 
 ## Running the app
-run `python mp3TOm4a.py` in the code folder
+Run `python mp3TOm4a.py` in the code folder.

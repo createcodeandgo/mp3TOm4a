@@ -7,7 +7,7 @@ I tested it only on Ubuntu.
 ## Prerequisites
 In the background the app uses the following software:
 - [FFmpeg](https://www.ffmpeg.org/)
-- [Sox](http://sox.sourceforge.net/sox.html]
+- [Sox](http://sox.sourceforge.net/sox.html)
 - [Pysox](https://github.com/rabitt/pysox)
 
 ## Running the app

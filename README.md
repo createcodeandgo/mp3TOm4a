@@ -4,7 +4,11 @@ Convert mp3s into one m4a file, including chapters and meta information based on
 
 I tested it only on Ubuntu.
 
-uses ffmpeg and sox
+## Prerequisites
+In the background the app uses the following software:
+- [FFmpeg](https://www.ffmpeg.org/)
+- [Sox](http://sox.sourceforge.net/sox.html]
+- [Pysox](https://github.com/rabitt/pysox)
 
-#### todo
-add cover art to m4a
+## Running the app
+run `python mp3TOm4a.py` in the code folder

@@ -75,7 +75,7 @@ class ConvertView(view.View):
         print("inserted meta data")
         self.inserted = True
         self.todo = True
-        self.show()
+        self.v.update_idle()
         
     def get_filelist(self):
         '''

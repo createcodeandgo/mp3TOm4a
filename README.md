@@ -1,6 +1,6 @@
 # Introduction
 
-Convert mp3s into one m4a file, including chapters and meta information based on the mp3 files.
+Convert several mp3s into one m4a file, including chapters and meta information based on the mp3 files.
 
 I tested it only on Ubuntu.
 

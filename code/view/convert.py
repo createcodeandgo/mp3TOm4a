@@ -6,8 +6,7 @@
     choose to quit or convert more.    
 '''
 
-from tkinter import *
-from tkinter import ttk
+from tkinter import ttk, messagebox
 import os
 from pathlib import Path
 import shlex
@@ -23,6 +22,9 @@ class ConvertView(view.View):
         ttk.Frame.__init__(self, app.root)
 
         self.app = app
+
+        self.m4aname: Path
+        self.album: Path 
         
         self.concatenated = False
         self.extracted = False
@@ -40,13 +42,9 @@ class ConvertView(view.View):
                 
         if self.inserted and self.extracted:
             self.todo = messagebox.askyesno('Finished', 'Convert another one?')
+            print("todo: ",self.todo)
             if self.todo:
-                self.concatenated = False
-                self.extracted = False
-                self.inserted = False
-                self.todo = False
-                self.v.destroy()
-                self.app.show_view("opening")
+                self.another_one()
             else:
                 self.shutdown()
         
@@ -61,18 +59,23 @@ class ConvertView(view.View):
         self.intro = False
         
         meta_out = str(self.get_filelist())
-        
+        print("read meta data from first mp3")        
         self.get_albumname()
-        self.app.m4aname = Path(self.app.dest_path, str(self.app.album)+".m4a")
+        print("got album name")
+        self.m4aname = Path(self.app.dest_path, str(self.album)+".m4a")
         cat_out = str(self.concatenate_mp3s())
+        print("concatenated mp3s")
         self.concatenated = True
                 
         self.extract_length()
         self.extracted = True
+        print("extracted length")
         
         self.meta_into_m4a()
+        print("inserted meta data")
         self.inserted = True
         self.todo = True
+        self.show()
         
     def get_filelist(self):
         '''
@@ -100,7 +103,7 @@ class ConvertView(view.View):
                 info = line.split('=')
                 if info[0] == 'album':
                     album = info[1].strip("\n")
-                    self.app.album = Path(album)
+                    self.album = Path(album)
                     break
 
     def concatenate_mp3s(self):
@@ -108,17 +111,10 @@ class ConvertView(view.View):
             run ffmpeg to concatenate the mp3s into one m4a
         '''
         listfile = shlex.quote(str(self.app.listfile))
-        print("listfile: ",repr(listfile))
-        listfile = listfile.strip()
         output = shlex.quote(str(self.app.output))
-        print("output: ",output)
         command = "ffmpeg -f concat -safe 0 -i {} -acodec aac -vn {}".format(listfile, output)
         args = shlex.split(command)
-        for item in args:
-            item = item.strip()
-        print("args: -------------> ",repr(args))
         cat_out = subprocess.run(args, capture_output=True)
-        print("concat -----------> ",cat_out)
         return cat_out
     
     def extract_length(self):
@@ -133,7 +129,7 @@ class ConvertView(view.View):
             length = int(l*1000)
             track = Path(track).name
             name = track[:-len(".mp3")]  # in 3.9 use removesuffix('.mp3')
-            self.write_metadata(str(self.app.album)+"_"+name, duration, length)
+            self.write_metadata(str(self.album)+"_"+name, duration, length)
             duration += (length + 1)
         self.extracted = True
 
@@ -161,14 +157,20 @@ class ConvertView(view.View):
         '''
         output = shlex.quote(str(self.app.output))
         meta = shlex.quote(str(self.app.metafile))
-        m4a = shlex.quote(str(self.app.m4aname))
-        print("m4a file: ",m4a)
+        m4a = shlex.quote(str(self.m4aname))
         command = "ffmpeg -i {} -i {} -map_metadata 1 -codec copy {}".format(output, meta, m4a)
-        print(command)
         args = shlex.split(command)
         out = subprocess.run(args, capture_output=True)
-        print("metadata in ---> ",out)
         self.inserted = True
+
+    def another_one(self):
+        self.concatenated = False
+        self.extracted = False
+        self.inserted = False
+        self.todo = False
+        self.v.destroy()
+        self.app.show_view("opening")
+
         
     def shutdown(self):
         if self.app.listfile.exists():

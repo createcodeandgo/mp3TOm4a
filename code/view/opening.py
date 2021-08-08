@@ -5,7 +5,6 @@
     user can choose the destination path for the m4a file
 '''
 
-#from tkinter import *
 from tkinter import ttk
 from tkinter import filedialog, messagebox
 import os
@@ -22,8 +21,6 @@ class OpeningView(view.View):
         self.app = app
 
         self.d = {}
-        self.sourcepath = Path.cwd()
-        self.destinationpath = Path.cwd()
         self.files = []
         self.stay = False
 
@@ -77,7 +74,7 @@ class OpeningView(view.View):
         self.get_rid_of_hiddenfiles()
         filelist = []
 
-        files = filedialog.askopenfilenames(title='find mp3s', initialdir=self.sourcepath, filetypes=types)
+        files = filedialog.askopenfilenames(title='find mp3s', initialdir=self.app.source_path, filetypes=types)
         for f in files:
             filelist.append(Path(f))
 

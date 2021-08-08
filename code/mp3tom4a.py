@@ -1,13 +1,11 @@
 #!/usr/bin/python3
 
 from pathlib import Path
-#from tkinter import *
 from tkinter import Tk
 from tkinter import ttk
+from PIL import Image, ImageTk
 
 from view.opening import OpeningView
-from view.concat import ConcatView
-from view.meta import MetaView
 from view.convert import ConvertView
 
 
@@ -29,17 +27,11 @@ class Converter():
         self.files: Path = []
         self.dest_path = Path(".")
         self.source_path = Path(".")
-        self.cat_out = ""
-        self.meta_out = ""
-        self.m4aname: Path
         self.listfile: Path
         self.metafile: Path
         self.output: Path
-        self.album: Path
 
         self.opening = OpeningView(self)
-        self.concat = ConcatView(self)
-        self.meta = MetaView(self)
         self.convert = ConvertView(self)
 
         self.view_dict = {"opening": self.opening,
@@ -55,6 +47,9 @@ class Converter():
 def main():
     try:
         root = Tk()
+        ico = Image.open('mp3TOm4a.png')
+        photo = ImageTk.PhotoImage(ico)
+        root.wm_iconphoto(False, photo)
         Converter(root)
         root.mainloop()
     except KeyboardInterrupt:
